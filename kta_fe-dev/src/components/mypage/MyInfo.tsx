@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import UserInfoForm from "./UserInfoForm";
 import Modal from "./Modal";
 import { formatDate } from "../../util/projectUtils";
+import { logout } from "../../api/requests/authApi";
 
 interface UserInfo {
   user_id: number;
@@ -38,9 +39,14 @@ const MyInfo = () => {
     return <div>Loading...</div>; // userInfo가 null일 경우 로딩 표시
   }
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("user_id");
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setUserInfo(null);
+      navigate("/", { state: { isLoggedOut: true } });
+    } catch (error) {
+      console.error("로그아웃 중 오류 발생: ", error);
+    }
   };
 
   const toggleModal = () => {
@@ -96,7 +102,10 @@ const MyInfo = () => {
           있어요.
         </p>
       </div>
-      총 펀딩 횟수: <strong>{userInfo.funding?userInfo.funding.split(",").length:0}</strong>
+      총 펀딩 횟수:{" "}
+      <strong>
+        {userInfo.funding ? userInfo.funding.split(",").length : 0}
+      </strong>
       <div className="space-y-4 mt-3">
         <button
           className="bg-blue-500 text-white px-4 py-2 mx-2 rounded hover:bg-blue-600 transition duration-300"
@@ -111,7 +120,6 @@ const MyInfo = () => {
           로그아웃
         </button>
       </div>
-
       <Modal isOpen={isModalOpen} toggleModal={toggleModal}>
         <UserInfoForm
           username={username}

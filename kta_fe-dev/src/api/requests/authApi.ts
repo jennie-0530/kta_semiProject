@@ -41,3 +41,23 @@ export const signup = async (signupData: SignupData) => {
     throw new Error("회원가입 중 오류 발생");
   }
 };
+
+export const logout = async () => {
+  try {
+    const response = await axios.post("/user/logout", null, {
+      withCredentials: true, // 쿠키를 포함한 요청
+    });
+
+    if (response.status === 204) {
+      // 로그아웃 성공
+      console.log("로그아웃 성공");
+
+      // 예: 로그인 페이지로 리다이렉트
+    } else {
+      // 로그아웃 실패
+      console.error("Logout failed");
+    }
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
+};

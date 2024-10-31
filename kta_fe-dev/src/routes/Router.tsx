@@ -46,7 +46,11 @@ export const routes = [
       // { path: "inquiries", element: <InquiryList /> },
       {
         path: "/mypage",
-        element: <MyPage />,
+        element: (
+          <ProtectedRoute>
+            <MyPage />
+          </ProtectedRoute>
+        ),
         children: [
           { path: "", element: <MyList />, index: true },
           { path: "my", element: <MyList /> },

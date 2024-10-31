@@ -41,17 +41,17 @@ exports.login = async (req: Request, res: Response) => {
 
     refreshTokens.push(refreshToken);
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true, // JavaScript에서 접근 불가
-      secure: process.env.NODE_ENV === 'production', // 프로덕션 환경에서만 HTTPS 사용
-      sameSite: 'strict', // CSRF 공격 방지
+      httpOnly: false, // true=JavaScript에서 접근 불가
+      secure: false,
+      sameSite: 'Lax' as 'lax', // CSRF 공격 방지
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7일
     });
 
     // Access Token을 쿠키에 저장합니다.
     res.cookie('accessToken', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      httpOnly: false,
+      secure: false,
+      sameSite: 'Lax' as 'lax',
       maxAge: 15 * 60 * 1000, // 15분
     });
     res.json({ accessToken }); // 클라이언트에 Access Token 반환
@@ -82,5 +82,6 @@ exports.logout = (req: Request, res: Response) => {
   const token = req.cookies.refreshToken;
   refreshTokens = refreshTokens.filter((t) => t !== token);
   res.clearCookie('refreshToken');
+  res.clearCookie('accessToken');
   res.sendStatus(204);
 };

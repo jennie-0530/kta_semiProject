@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -7,10 +8,9 @@ const Header = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("token="));
+    const token = Cookies.get("accessToken");
     setIsLoggedIn(!!token);
+    console.log("token", token);
   }, [location]);
 
   const toggleMobileMenu = () => {

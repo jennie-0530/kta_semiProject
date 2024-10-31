@@ -2,6 +2,7 @@ import LoginForm from "../components/login/LoginForm";
 import { useState } from "react";
 import { login } from "../api/requests/authApi";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 interface LoginData {
   email: string;
@@ -16,7 +17,6 @@ const Login = () => {
     password: "",
   });
 
-  const [accessToken, setAccessToken] = useState<string | null>(null);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -27,8 +27,9 @@ const Login = () => {
     const { email, password } = formData;
     try {
       const response = await login({ email, password });
-      setAccessToken(response.accessToken);
-      console.log(response);
+      if (response.accessToken) {
+        Cookies.set("accessToken", response.accessToken);
+      }
       navigate("/");
     } catch (error) {
       console.error("로그인 중 오류 발생", error);
